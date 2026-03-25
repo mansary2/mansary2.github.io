@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ash — Software Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #141413;
+      --text: #E8E6DF;
+      --text-secondary: #9C9A92;
+      --accent: #6DBF64;
+      --accent-light: #1E2E1C;
+      --border: #2C2C2A;
+      --card-bg: #1C1C1A;
+      --max-width: 680px;
+    }
+
+    html.light {
+      --bg: #FAFAF8;
+      --text: #1A1A18;
+      --text-secondary: #6B6B63;
+      --accent: #2D5A27;
+      --accent-light: #E8F0E7;
+      --border: #E2E2DC;
+      --card-bg: #FFFFFF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s, border-color 0.3s, transform 0.2s;
+      z-index: 100;
+      padding: 0;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--accent);
+      transform: scale(1.08);
+    }
+
+    .theme-toggle svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: var(--text);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.3s;
+    }
+
+    .theme-toggle .icon-sun { display: none; }
+    .theme-toggle .icon-moon { display: block; }
+    html.light .theme-toggle .icon-sun { display: block; }
+    html.light .theme-toggle .icon-moon { display: none; }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 80px 24px 120px;
+    }
+
+    header {
+      margin-bottom: 72px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    header h1 {
+      font-family: 'Newsreader', serif;
+      font-weight: 500;
+      font-size: 2.6rem;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+    .tagline {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      margin-bottom: 20px;
+    }
+
+    header p {
+      font-family: 'Newsreader', serif;
+      font-size: 1.12rem;
+      color: var(--text-secondary);
+      font-style: italic;
+      max-width: 560px;
+      line-height: 1.8;
+    }
+
+    .articles {
+      animation: fadeUp 0.6s ease 0.15s both;
+    }
+
+    .articles-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 28px;
+    }
+
+    /* ---- COLLAPSIBLE ARTICLES ---- */
+    article {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+      overflow: hidden;
+    }
+
+    article:hover {
+      border-color: var(--accent);
+      box-shadow: 0 2px 24px rgba(45, 90, 39, 0.06);
+    }
+
+    .article-header {
+      padding: 32px 32px 0;
+    }
+
+    article h2 {
+      font-family: 'Newsreader', serif;
+      font-weight: 500;
+      font-size: 1.3rem;
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+
+    article .date {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+
+    .article-preview {
+      padding: 0 32px;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+    }
+
+    .article-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease, opacity 0.4s ease;
+      opacity: 0;
+    }
+
+    .article-body.expanded {
+      max-height: 3000px;
+      opacity: 1;
+    }
+
+    .article-body-inner {
+      padding: 12px 32px 0;
+    }
+
+    .article-body-inner p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin-bottom: 12px;
+    }
+
+    .article-body-inner p:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .article-body-inner .takeaway {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .article-body-inner .tech-used {
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .read-toggle {
+      display: inline-block;
+      padding: 16px 32px 28px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--accent);
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-family: 'DM Sans', sans-serif;
+      transition: opacity 0.2s;
+    }
+
+    .read-toggle:hover {
+      opacity: 0.7;
+    }
+
+    .read-toggle .arrow {
+      display: inline-block;
+      transition: transform 0.3s ease;
+      margin-left: 4px;
+    }
+
+    .read-toggle.expanded .arrow {
+      transform: rotate(180deg);
+    }
+
+    /* ---- DIAGRAMS ---- */
+    .diagram-container {
+      margin: 20px 0 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 8px;
+    }
+
+    .diagram-container svg text {
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .diagram-container svg .box-label {
+      font-size: 12px;
+      font-weight: 500;
+      fill: var(--text);
+    }
+
+    .diagram-container svg .box-sub {
+      font-size: 10.5px;
+      fill: var(--text-secondary);
+    }
+
+    .diagram-container svg .annotation {
+      font-size: 10.5px;
+      font-weight: 500;
+    }
+
+    /* Dark mode diagram overrides */
+    .diagram-container svg .box-blue { fill: #1A2E3D; stroke: #2A5070; }
+    .diagram-container svg .box-green { fill: #1A2D1A; stroke: #2D5A27; }
+    .diagram-container svg .box-gray { fill: #252523; stroke: #444441; }
+    .diagram-container svg .box-red { fill: #2D1616; stroke: #6B2A2A; }
+    .diagram-container svg .box-purple { fill: #221F38; stroke: #4A4580; }
+    .diagram-container svg .box-green-light { fill: #1A2D1A; stroke: #3B6D11; }
+    html.light .diagram-container svg .box-blue { fill: #E6F1FB; stroke: #85B7EB; }
+    html.light .diagram-container svg .box-green { fill: #E1F5EE; stroke: #5DCAA5; }
+    html.light .diagram-container svg .box-gray { fill: #F1EFE8; stroke: #B4B2A9; }
+    html.light .diagram-container svg .box-red { fill: #FCEBEB; stroke: #F09595; }
+    html.light .diagram-container svg .box-purple { fill: #EEEDFE; stroke: #AFA9EC; }
+    html.light .diagram-container svg .box-green-light { fill: #EAF3DE; stroke: #97C459; }
+
+    /* ---- FOOTER ---- */
+    footer {
+      margin-top: 72px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      animation: fadeUp 0.6s ease 0.3s both;
+    }
+
+    footer .links {
+      display: flex;
+      gap: 20px;
+    }
+
+    footer a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding-bottom: 2px;
+      border-bottom: 1.5px solid var(--border);
+      transition: border-color 0.25s;
+    }
+
+    footer a:hover {
+      border-color: var(--accent);
+    }
+
+    footer .colophon {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 48px 20px 80px; }
+      header h1 { font-size: 2rem; }
+      header { margin-bottom: 56px; }
+      .article-header { padding: 24px 24px 0; }
+      .article-preview { padding: 0 24px; }
+      .article-body-inner { padding: 12px 24px 0; }
+      .read-toggle { padding: 16px 24px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+    <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  </button>
+  <div class="container">
+
+    <header>
+      <h1>Ash</h1>
+      <div class="tagline">Software Engineer · Five Years of Figuring Things Out</div>
+      <p>Electrical engineer turned software engineer. I like building and fixing things.</p>
+    </header>
+
+    <div class="articles">
+      <div class="articles-label">Tales From My Adventures</div>
+
+      <!-- ====== ARTICLE 1: 60-SECOND BUG ====== -->
+      <article>
+        <div class="article-header">
+          <h2>The 60-Second Response That Should Have Taken Nanoseconds</h2>
+        </div>
+        <div class="article-preview">
+          <p>A customer at work reported that a web service generated by our product was taking 60 seconds to respond. For context, our product generates web services from legacy COBOL applications — a request comes in as JSON or SOAP, a runtime engine translates it into a format the COBOL application can process, then translates the output back. Normal response times are milliseconds at worst. Sixty seconds meant something was broken.</p>
+        </div>
+        <div class="article-body" id="body-1">
+          <div class="article-body-inner">
+            <p>I recreated the issue locally, confirmed the latency, and built a trivial control service to verify the platform itself was fine. It was — nanoseconds. So the problem was specific to this service.</p>
+            <p>I pulled up Wireshark to inspect the raw HTTP traffic. The request body had an array initialized with 100 null elements. The response was worse — 1,000 nulls. A lot of memory allocated for nothing.</p>
+            <p>The root cause came down to how the generated code handled memory pre-allocation for arrays inside loops. COBOL doesn't support dynamic allocation, so everything has to be sized up front. The generated code was over-allocating based on worst-case defaults, and the runtime was faithfully serializing all that empty space into every response. Multiply that across nested structures and you get your 60-second round trip.</p>
+
+            <div class="diagram-container">
+              <svg width="100%" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <marker id="arr1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </marker>
+                </defs>
+                <rect x="20" y="20" width="120" height="48" rx="6" class="box-blue" stroke-width="0.75"/>
+                <text class="box-label" x="80" y="40" text-anchor="middle" dominant-baseline="central">Client</text>
+                <text class="box-sub" x="80" y="54" text-anchor="middle" dominant-baseline="central">JSON request</text>
+                <line x1="140" y1="44" x2="178" y2="44" stroke="#888780" stroke-width="1" marker-end="url(#arr1)"/>
+                <rect x="180" y="20" width="160" height="48" rx="6" class="box-green" stroke-width="0.75"/>
+                <text class="box-label" x="260" y="40" text-anchor="middle" dominant-baseline="central">Runtime Engine</text>
+                <text class="box-sub" x="260" y="54" text-anchor="middle" dominant-baseline="central">Translates request</text>
+                <line x1="340" y1="44" x2="378" y2="44" stroke="#888780" stroke-width="1" marker-end="url(#arr1)"/>
+                <rect x="380" y="20" width="140" height="48" rx="6" class="box-gray" stroke-width="0.75"/>
+                <text class="box-label" x="450" y="40" text-anchor="middle" dominant-baseline="central">Legacy App</text>
+                <text class="box-sub" x="450" y="54" text-anchor="middle" dominant-baseline="central">Processes data</text>
+                <line x1="450" y1="68" x2="450" y2="108" stroke="#888780" stroke-width="1" marker-end="url(#arr1)"/>
+                <rect x="280" y="100" width="300" height="170" rx="8" fill="none" stroke="#E24B4A" stroke-width="0.75" stroke-dasharray="5 4" opacity="0.7"/>
+                <text class="annotation" x="430" y="286" text-anchor="middle" fill="#E24B4A">The bottleneck</text>
+                <rect x="310" y="110" width="240" height="48" rx="6" class="box-red" stroke-width="0.75"/>
+                <text class="box-label" x="430" y="130" text-anchor="middle" dominant-baseline="central">Memory Pre-Allocation</text>
+                <text class="box-sub" x="430" y="144" text-anchor="middle" dominant-baseline="central">Arrays sized to worst-case</text>
+                <line x1="430" y1="158" x2="430" y2="188" stroke="#E24B4A" stroke-width="1" marker-end="url(#arr1)"/>
+                <rect x="310" y="190" width="240" height="48" rx="6" class="box-red" stroke-width="0.75"/>
+                <text class="box-label" x="430" y="210" text-anchor="middle" dominant-baseline="central">Response Serialization</text>
+                <text class="box-sub" x="430" y="224" text-anchor="middle" dominant-baseline="central">1,000 null elements serialized</text>
+                <path d="M310 214 L80 214 L80 248" fill="none" stroke="#888780" stroke-width="1" marker-end="url(#arr1)"/>
+                <rect x="20" y="250" width="120" height="48" rx="6" class="box-blue" stroke-width="0.75"/>
+                <text class="box-label" x="80" y="270" text-anchor="middle" dominant-baseline="central">Client</text>
+                <text class="box-sub" x="80" y="284" text-anchor="middle" dominant-baseline="central">60s response</text>
+                <line x1="260" y1="298" x2="260" y2="338" stroke="#97C459" stroke-width="0.75" stroke-dasharray="4 3" marker-end="url(#arr1)"/>
+                <rect x="120" y="340" width="280" height="40" rx="6" class="box-green-light" stroke-width="0.75"/>
+                <text class="box-label" x="260" y="362" text-anchor="middle" dominant-baseline="central">Fix: size arrays to actual usage → nanoseconds</text>
+              </svg>
+            </div>
+
+            <p>I tuned the pre-allocation logic to size arrays based on actual usage. Response times dropped back to nanoseconds, wasted memory disappeared, and the fix shipped to all customers on the product.</p>
+            <div class="takeaway">Takeaway: The slowest bug I ever fixed had nothing to do with algorithms or network latency. It was empty memory being carefully converted from one format to another, thousands of times over.</div>
+            <div class="tech-used">COBOL · Web Services · Wireshark · Performance Analysis · Memory Optimization</div>
+          </div>
+        </div>
+        <button class="read-toggle" onclick="toggle(1)">Read more <span class="arrow">&#9662;</span></button>
+      </article>
+
+      <!-- ====== ARTICLE 2: TRIP SHARING APP ====== -->
+      <article>
+        <div class="article-header">
+          <h2>The Trip-Sharing App Nobody Asked For (But We Needed)</h2>
+        </div>
+        <div class="article-preview">
+          <p>Right after grad school, some friends and I kept running into the same annoying problem. We all loved traveling, and we'd constantly ask each other things like "where did you stay in Lisbon?" or "send me that list of places from your Tokyo trip." The answers always came back as scattered texts or a Google Doc that someone forgot to share. So we built an app.</p>
+        </div>
+        <div class="article-body" id="body-3">
+          <div class="article-body-inner">
+            <p>The idea was simple: a place where you could save the spots you've been to, organize them into collections, add friends, and share your trips with them. No more digging through group chats. We went serverless on AWS — DynamoDB for storage, Cognito for auth, the whole stack deployed automatically.</p>
+            <p>I ended up owning most of the backend plumbing. The part I'm proudest of isn't any single feature — it's the infrastructure I set up around the code. I wrote unit tests with Jest using mocked DynamoDB calls, wired up git hooks so tests ran automatically before any commit or push could go through, and built out a full CI pipeline in Azure Pipelines that spun up a VM, ran the test suite, and published coverage reports. None of that was required — we were just building this for fun — but I wanted to know what a real development workflow felt like end to end.</p>
+            <p>It taught me more about backend architecture, CI/CD, and working on a team than anything I'd done in school. It's also the project that made me become a software engineer — I came out of grad school with an electrical engineering degree, but building this app showed me that shipping software was what I actually wanted to do. And honestly, building something just because you and your friends wanted it to exist is the most fun way to learn.</p>
+            <div class="tech-used">AWS (DynamoDB, Cognito) · Serverless · Jest · Azure Pipelines · Node.js</div>
+          </div>
+        </div>
+        <button class="read-toggle" onclick="toggle(3)">Read more <span class="arrow">&#9662;</span></button>
+      </article>
+
+      <!-- ====== ARTICLE 3: ADAPTIVE FILTERING ====== -->
+      <article>
+        <div class="article-header">
+          <h2>From Signals to Software: What Adaptive Filtering Taught Me About Noisy Data</h2>
+        </div>
+        <div class="article-preview">
+          <p>In grad school, I worked on multipath mitigation — the problem where radio signals bounce off buildings and terrain before reaching a receiver, arriving as a garbled mess of overlapping waveforms. GPS systems, passive radar, telecom — they all deal with this. I simulated the problem in MATLAB and used adaptive filters (LMS and NLMS) to recover the original clean signal from the noise.</p>
+        </div>
+        <div class="article-body" id="body-4">
+          <div class="article-body-inner">
+            <p>The first approach — a basic two-tap LMS filter — didn't work. The weights oscillated and diverged instead of settling, and the error signal never died down. I spent a while tuning parameters thinking I had something wrong, but the filter just didn't have enough degrees of freedom to model the interference. Bumping it to eight taps helped significantly — the weights converged around 300 iterations and the error dropped to zero. But the real breakthrough was switching to NLMS, which normalizes the weight update by the input signal's energy. Even with just two taps, NLMS drove the error to near-zero where LMS couldn't. Then at higher sampling rates, LMS fell apart again — the weights started oscillating with no sign of convergence — while NLMS stayed stable. The lesson was that throwing more complexity at a problem (more taps, more iterations) doesn't always fix it. A fundamentally better approach at the algorithmic level can do more with less.</p>
+            <p>That pattern shows up constantly in software. I've hit the same dynamic building web apps — brute-forcing a solution with more code or more state when the real fix is rethinking the approach. Messy API responses, race conditions, state that won't settle — they're different problems on the surface, but the underlying shape is the same: noisy input, clean output needed, and a system that has to adapt.</p>
+            <div class="tech-used">Adaptive Filtering · LMS/NLMS · MATLAB · Signal Processing</div>
+          </div>
+        </div>
+        <button class="read-toggle" onclick="toggle(4)">Read more <span class="arrow">&#9662;</span></button>
+      </article>
+
+    </div>
+
+    <footer>
+      <div class="links">
+        <a href="mailto:nafi.ashraf@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/ashraf-ansary/">LinkedIn</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    function toggle(id) {
+      const body = document.getElementById('body-' + id);
+      const btn = body.closest('article').querySelector('.read-toggle');
+      const isExpanded = body.classList.contains('expanded');
+
+      body.classList.toggle('expanded');
+      btn.classList.toggle('expanded');
+      btn.innerHTML = isExpanded
+        ? 'Read more <span class="arrow">&#9662;</span>'
+        : 'Read less <span class="arrow">&#9662;</span>';
+    }
+
+    function toggleTheme() {
+      document.documentElement.classList.toggle('light');
+      const isLight = document.documentElement.classList.contains('light');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    }
+
+    // Load saved preference (default: dark)
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light') {
+      document.documentElement.classList.add('light');
+    }
+  </script>
+</body>
+</html>
