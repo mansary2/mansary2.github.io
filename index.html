@@ -350,6 +350,22 @@
       color: var(--text);
     }
 
+    .article-body-inner .paper-link {
+      display: inline-block;
+      margin-top: 14px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--accent);
+      text-decoration: none;
+      padding-bottom: 2px;
+      border-bottom: 1.5px solid var(--border);
+      transition: border-color 0.25s;
+    }
+
+    .article-body-inner .paper-link:hover {
+      border-color: var(--accent);
+    }
+
     .article-body-inner .tech-used {
       margin-top: 14px;
       font-size: 0.8rem;
@@ -510,6 +526,17 @@
             <div class="project-desc">Save and share the places you've been with friends.</div>
           </div>
         </a>
+        <a class="project-tile" href="papers/multipath-mitigation-lms.pdf" target="_blank" rel="noopener">
+          <div class="project-icon">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div>
+            <div class="project-name">Multipath Mitigation Paper
+              <svg viewBox="0 0 24 24"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>
+            </div>
+            <div class="project-desc">My grad research on adaptive LMS/NLMS filtering (PDF).</div>
+          </div>
+        </a>
         <div class="project-tile placeholder">More on the way&hellip;</div>
       </div>
     </div>
@@ -638,6 +665,7 @@
             <p>My first attempt — a basic two-tap LMS filter — flat-out didn't work. The weights oscillated and diverged instead of settling, and the error signal never died down. I spent a while tuning parameters, convinced I'd made a mistake somewhere, before accepting that the filter simply didn't have enough degrees of freedom to model the interference.</p>
             <p>Bumping it up to eight taps helped a lot: the weights converged around 300 iterations and the error dropped to zero. But the real breakthrough was switching to NLMS, which normalizes each weight update by the energy of the input signal. With just two taps — the same two taps that had failed before — NLMS drove the error to near zero. And when I pushed the sampling rate higher, LMS fell apart all over again, weights oscillating with no sign of convergence, while NLMS stayed rock steady.</p>
             <p>The lesson stuck with me: throwing more complexity at a problem — more taps, more iterations — doesn't always fix it. A fundamentally better algorithm can do more with less. That pattern shows up constantly in software too. I've caught myself brute-forcing web app problems with more code and more state when the real fix was rethinking the approach. Messy API responses, race conditions, state that won't settle — none of them look like radio signals, but the job is the same: pulling something clean out of something noisy.</p>
+            <a class="paper-link" href="papers/multipath-mitigation-lms.pdf" target="_blank" rel="noopener">Read the full paper (PDF) &rarr;</a>
             <div class="tech-used">Adaptive Filtering · LMS/NLMS · MATLAB · Signal Processing</div>
           </div>
         </div>
