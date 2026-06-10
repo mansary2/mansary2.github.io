@@ -544,6 +544,76 @@
     <div class="articles">
       <div class="articles-label">Tales From My Adventures</div>
 
+      <!-- ====== ARTICLE: TRAVERRA TWO-LAYER ARCHITECTURE ====== -->
+      <article>
+        <div class="article-header">
+          <h2>How I Fit 64 Million Places Into 25 Gigabytes</h2>
+        </div>
+        <div class="article-preview">
+          <p>I'm building Traverra, a community-driven places API — think Google Places, but open and wiki-style: anyone can add spots, and the community keeps them accurate. The first consumer is the trip-sharing app I work on with friends. For Traverra to be useful from day one, it needed global coverage, and that meant loading 64 million places into the database. That's where the trouble started.</p>
+        </div>
+        <div class="article-body" id="body-2">
+          <div class="article-body-inner">
+            <p>Traverra's schema doesn't just store coordinates. Every spot tracks revision history, trust levels, moderation flags, hours, photos — the machinery that makes community data trustworthy. I ran the numbers on loading all 64 million places with that full schema: 300–500 GB in Postgres, north of $100 a month on a managed database. For a project with exactly zero users. I looked at cheaper self-hosted options, but that meant owning backups, security, and PostGIS configuration — all time I'd rather spend building the product. I was stuck: full coverage was too expensive, partial coverage made the product useless, and self-hosting traded a money problem for a time problem.</p>
+            <p>The fix was embarrassingly simple once I saw it: stop treating all 64 million places the same. I split the data into two layers in the same database. A lightweight, read-only reference table holds the raw Overture Maps dataset with a spatial index — global coverage in about 15–25 GB, because it stores little more than names, categories, and coordinates. A separate community table uses the full schema and starts completely empty. A spot only gets written there when a user actually interacts with it — edits, flags, verifies, adds hours or photos. The API checks the community table first and falls back to the reference layer when nothing's there.</p>
+
+            <div class="diagram-container">
+              <svg width="100%" viewBox="0 0 600 392" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </marker>
+                </defs>
+
+                <!-- Client -->
+                <rect x="230" y="14" width="140" height="44" rx="6" class="box-blue" stroke-width="0.75"/>
+                <text class="box-label" x="300" y="30" text-anchor="middle" dominant-baseline="central">Client App</text>
+                <text class="box-sub" x="300" y="46" text-anchor="middle" dominant-baseline="central">"spots near me?"</text>
+
+                <line x1="300" y1="58" x2="300" y2="82" stroke="#888780" stroke-width="1" marker-end="url(#arr2)"/>
+
+                <!-- Traverra API -->
+                <rect x="200" y="84" width="200" height="48" rx="6" class="box-green" stroke-width="0.75"/>
+                <text class="box-label" x="300" y="102" text-anchor="middle" dominant-baseline="central">Traverra API</text>
+                <text class="box-sub" x="300" y="118" text-anchor="middle" dominant-baseline="central">merge · dedupe · respond</text>
+
+                <!-- Arrows to the two layers -->
+                <line x1="255" y1="132" x2="165" y2="186" stroke="#888780" stroke-width="1" marker-end="url(#arr2)"/>
+                <line x1="345" y1="132" x2="435" y2="186" stroke="#888780" stroke-width="1" marker-end="url(#arr2)"/>
+                <text class="annotation" x="172" y="158" text-anchor="end" fill="#888780">1 · checked first</text>
+                <text class="annotation" x="428" y="158" text-anchor="start" fill="#888780">2 · fallback</text>
+
+                <!-- Community table -->
+                <rect x="40" y="188" width="240" height="70" rx="6" class="box-purple" stroke-width="0.75"/>
+                <text class="box-label" x="160" y="206" text-anchor="middle" dominant-baseline="central">Community Table</text>
+                <text class="box-sub" x="160" y="224" text-anchor="middle" dominant-baseline="central">full schema: history · trust · hours</text>
+                <text class="box-sub" x="160" y="240" text-anchor="middle" dominant-baseline="central">starts empty — grows with use</text>
+
+                <!-- Overture reference table -->
+                <rect x="320" y="188" width="240" height="70" rx="6" class="box-gray" stroke-width="0.75"/>
+                <text class="box-label" x="440" y="206" text-anchor="middle" dominant-baseline="central">Overture Reference Table</text>
+                <text class="box-sub" x="440" y="224" text-anchor="middle" dominant-baseline="central">64M places · read-only</text>
+                <text class="box-sub" x="440" y="240" text-anchor="middle" dominant-baseline="central">spatial index · 15–25 GB</text>
+
+                <!-- Promotion path -->
+                <path d="M440 258 L440 292 L160 292 L160 262" fill="none" stroke="#97C459" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arr2)"/>
+                <text class="annotation" x="300" y="306" text-anchor="middle" fill="#97C459">a user edit promotes the spot</text>
+
+                <!-- Result -->
+                <rect x="130" y="336" width="340" height="36" rx="6" class="box-green-light" stroke-width="0.75"/>
+                <text class="box-label" x="300" y="356" text-anchor="middle" dominant-baseline="central">Full schema: 300–500 GB → split: ~25 GB</text>
+              </svg>
+            </div>
+
+            <p>There's a quiet bonus in this design beyond the bill. Because every spot in the community table got there through a real interaction, the expensive layer fills up weighted toward the places people actually care about — I never had to decide which cities or regions to import upfront, because usage decides. And since each record tracks where its data came from, a spot's fields can graduate from "imported baseline" to "community-verified" as people confirm them.</p>
+            <p>The storage footprint dropped by more than 90%, the bill came down with it, and the architecture hasn't needed rethinking since.</p>
+            <div class="takeaway">Takeaway: The best infrastructure decisions aren't about picking the right technology. They're about figuring out which work you can defer until someone actually needs it.</div>
+            <div class="tech-used">PostgreSQL · PostGIS · Overture Maps · Node.js · API Design</div>
+          </div>
+        </div>
+        <button class="read-toggle" onclick="toggle(2)">Read more <span class="arrow">&#9662;</span></button>
+      </article>
+
       <!-- ====== ARTICLE 1: 60-SECOND BUG ====== -->
       <article>
         <div class="article-header">
