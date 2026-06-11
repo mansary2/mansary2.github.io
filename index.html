@@ -619,7 +619,6 @@
 
             <p>There's a quiet bonus in this design beyond the bill. Because every spot in the community table got there through a real interaction, the expensive layer fills up weighted toward the places people actually care about — I never had to decide which cities or regions to import upfront, because usage decides. And since each record tracks where its data came from, a spot's fields can graduate from "imported baseline" to "community-verified" as people confirm them.</p>
             <p>The storage footprint dropped by more than 90%, the bill came down with it, and the architecture hasn't needed rethinking since.</p>
-            <div class="takeaway">Takeaway: The best infrastructure decisions aren't about picking the right technology. They're about figuring out which work you can defer until someone actually needs it.</div>
             <div class="tech-used">PostgreSQL · PostGIS · Overture Maps · Node.js · API Design</div>
           </div>
         </div>
@@ -708,7 +707,6 @@
 
             <p>The runtime engine belonged to another team, so I partnered with them to trace the request through their layer — and the hypothesis held. The table allocation was being calculated from the declared maximum, and we changed it to size from the number of elements actually populated. Latency dropped from 60 seconds back into the sub-millisecond range, the wasted memory disappeared, and the fix shipped to every customer on the product.</p>
             <p>Two things I'd do differently. I'd loop in the runtime team earlier — I spent a fair amount of time investigating solo, and since the bug lived in their layer, their context would have gotten us to root cause faster. And because nothing about the bug was specific to this customer's data, I'd add a regression test that checks serialized payload size against the actual element count, so this whole class of over-allocation bug gets caught before it ever reaches a customer.</p>
-            <div class="takeaway">Takeaway: The slowest bug I ever fixed had nothing to do with algorithms or network latency. It was empty memory being carefully converted from one format to another, thousands of times over. And the cheapest experiment — a service that adds two numbers — is what kept me from guessing my way through the whole stack.</div>
             <div class="tech-used">COBOL · Web Services · Wireshark · Performance Analysis · Memory Optimization</div>
           </div>
         </div>
