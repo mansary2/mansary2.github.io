@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ash — Software Engineer</title>
+  <title>Ashraf Ansary — Software Engineer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Newsreader:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
   <style>
@@ -116,13 +116,10 @@
       letter-spacing: -0.02em;
       line-height: 1.2;
       margin-bottom: 4px;
-      display: inline-block;
-      background: linear-gradient(105deg, var(--text) 35%, var(--accent) 80%, var(--accent-2));
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
       color: var(--text);
     }
+
+    header h1 .name-accent { color: var(--accent); }
 
     .tagline {
       font-size: 0.92rem;
@@ -141,18 +138,56 @@
       line-height: 1.8;
     }
 
-    /* ---- PROJECTS ---- */
-    .projects {
-      margin-bottom: 72px;
+    /* ---- TABS ---- */
+    .tabs {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 44px;
+      border-bottom: 1px solid var(--border);
       animation: fadeUp 0.6s ease 0.15s both;
     }
 
-    .articles {
-      animation: fadeUp 0.6s ease 0.25s both;
+    .tab {
+      position: relative;
+      padding: 8px 2px 15px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: color 0.25s;
+    }
+
+    .tab:hover { color: var(--text); }
+    .tab.active { color: var(--text); }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border-radius: 1px;
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active {
+      display: block;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    /* ---- PROJECTS ---- */
+    .projects {
+      margin-bottom: 8px;
     }
 
     .projects-label,
-    .articles-label {
+    .articles-label,
+    .section-label {
       display: flex;
       align-items: center;
       gap: 16px;
@@ -165,7 +200,8 @@
     }
 
     .projects-label::after,
-    .articles-label::after {
+    .articles-label::after,
+    .section-label::after {
       content: '';
       flex: 1;
       height: 1.5px;
@@ -272,6 +308,102 @@
       transform: none;
       box-shadow: none;
       border-color: var(--border);
+    }
+
+    /* ---- ABOUT ---- */
+    .about-block { margin-bottom: 48px; }
+    .about-block:last-child { margin-bottom: 0; }
+
+    .about-intro {
+      font-family: 'Newsreader', serif;
+      font-size: 1.12rem;
+      font-style: italic;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .hobbies {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hobby {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 9px 18px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: border-color 0.3s, transform 0.25s ease, box-shadow 0.3s;
+    }
+
+    .hobby:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px var(--glow);
+    }
+
+    .hobby .emoji {
+      font-size: 1.15rem;
+      line-height: 1;
+    }
+
+    .timeline { padding-left: 2px; }
+
+    .entry {
+      position: relative;
+      padding-left: 26px;
+      padding-bottom: 26px;
+      border-left: 1.5px solid var(--border);
+    }
+
+    .entry:last-child {
+      padding-bottom: 0;
+      border-left-color: transparent;
+    }
+
+    .entry::before {
+      content: '';
+      position: absolute;
+      left: -6.5px;
+      top: 5px;
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 0 4px var(--bg);
+    }
+
+    .entry-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .entry-role {
+      font-size: 0.98rem;
+      font-weight: 600;
+    }
+
+    .entry-company { color: var(--accent); }
+
+    .entry-date {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .entry-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-top: 5px;
     }
 
     /* ---- COLLAPSIBLE ARTICLES ---- */
@@ -489,8 +621,8 @@
     @media (max-width: 600px) {
       .container { padding: 48px 20px 80px; }
       header h1 { font-size: 2rem; }
-      header { margin-bottom: 56px; }
-      .projects { margin-bottom: 56px; }
+      header { margin-bottom: 48px; }
+      .tabs { gap: 22px; }
       .project-grid { grid-template-columns: 1fr; }
       .article-header { padding: 24px 24px 0; }
       .article-preview { padding: 0 24px; }
@@ -507,14 +639,19 @@
   <div class="container">
 
     <header>
-      <h1>Ash</h1>
+      <h1><span class="name-accent">Ash</span>raf Ansary</h1>
       <div class="tagline">Software Engineer · Still Figuring Things Out</div>
       <p>Electrical engineer turned software engineer. I like building and fixing things.</p>
     </header>
 
-    <div class="projects">
-      <div class="projects-label">Projects</div>
+    <nav class="tabs">
+      <button class="tab" data-tab="blog" onclick="showTab('blog')">Blog</button>
+      <button class="tab" data-tab="projects" onclick="showTab('projects')">Projects</button>
+      <button class="tab" data-tab="about" onclick="showTab('about')">About</button>
+    </nav>
 
+    <div class="tab-panel" data-panel="projects">
+    <div class="projects">
       <div class="project-grid">
         <a class="project-tile" href="https://traverra.fly.dev/playground" target="_blank" rel="noopener">
           <div class="project-icon">
@@ -549,12 +686,12 @@
             <div class="project-desc">My grad research on adaptive LMS/NLMS filtering (PDF).</div>
           </div>
         </a>
-        <div class="project-tile placeholder">More on the way&hellip;</div>
       </div>
     </div>
+    </div>
 
+    <div class="tab-panel" data-panel="blog">
     <div class="articles">
-      <div class="articles-label">Tales From My Adventures</div>
 
       <!-- ====== ARTICLE: TRAVERRA TWO-LAYER ARCHITECTURE ====== -->
       <article>
@@ -753,6 +890,77 @@
       </article>
 
     </div>
+    </div>
+
+    <div class="tab-panel" data-panel="about">
+
+      <div class="about-block">
+        <p class="about-intro">I go by Ash (like the Pokémon trainer).</p>
+      </div>
+
+      <div class="about-block">
+        <div class="section-label">Hobbies</div>
+        <div class="hobbies">
+          <div class="hobby"><span class="emoji">⚽</span> Soccer</div>
+          <div class="hobby"><span class="emoji">🏃</span> Running</div>
+          <div class="hobby"><span class="emoji">📚</span> Reading</div>
+          <div class="hobby"><span class="emoji">🎮</span> Video Games</div>
+        </div>
+      </div>
+
+      <div class="about-block">
+        <div class="section-label">Experience</div>
+        <div class="timeline">
+          <div class="entry">
+            <div class="entry-top">
+              <div class="entry-role">Software Engineer · <span class="entry-company">Rocket Software</span></div>
+              <div class="entry-date">Mar 2021 – Present</div>
+            </div>
+            <p class="entry-desc">Promoted to Software Engineer II in 2025. I build IMTK Web, a developer platform that exposes legacy COBOL programs as JSON, SOAP, and Java web services, and ship features and fixes for Enterprise Developer, an IBM mainframe development environment. (Formerly OpenText / Micro Focus.)</p>
+          </div>
+          <div class="entry">
+            <div class="entry-top">
+              <div class="entry-role">Software Developer · <span class="entry-company">General Motors</span></div>
+              <div class="entry-date">Oct 2020 – Mar 2021</div>
+            </div>
+            <p class="entry-desc">Improved backend reliability for a vehicle configuration platform, adding unit-test coverage with JUnit and Mockito to cut regression risk during active development.</p>
+          </div>
+          <div class="entry">
+            <div class="entry-top">
+              <div class="entry-role">Intern · <span class="entry-company">Siemens</span></div>
+              <div class="entry-date">Jul 2020 – Oct 2020</div>
+            </div>
+            <p class="entry-desc">Supported the PSS®E power-system simulation team with end-to-end testing across simulation workflows, catching integration issues before release.</p>
+          </div>
+          <div class="entry">
+            <div class="entry-top">
+              <div class="entry-role">Graduate Research Assistant · <span class="entry-company">George Mason University</span></div>
+              <div class="entry-date">Sep 2017 – Jan 2018</div>
+            </div>
+            <p class="entry-desc">Applied research spanning software, embedded systems, and sensor data — including a smartwatch app for collecting physiological data and a microcontroller-based biomedical measurement system.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-block">
+        <div class="section-label">Education</div>
+        <div class="timeline">
+          <div class="entry">
+            <div class="entry-top">
+              <div class="entry-role">M.S. Electrical Engineering · <span class="entry-company">George Mason University</span></div>
+              <div class="entry-date">2017 – 2019</div>
+            </div>
+          </div>
+          <div class="entry">
+            <div class="entry-top">
+              <div class="entry-role">B.S. Electrical Engineering · <span class="entry-company">George Mason University</span></div>
+              <div class="entry-date">2013 – 2017</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
 
     <footer>
       <div class="links">
@@ -764,6 +972,14 @@
   </div>
 
   <script>
+    function showTab(name) {
+      document.querySelectorAll('.tab').forEach(t =>
+        t.classList.toggle('active', t.dataset.tab === name));
+      document.querySelectorAll('.tab-panel').forEach(p =>
+        p.classList.toggle('active', p.dataset.panel === name));
+      if (history.replaceState) history.replaceState(null, '', '#' + name);
+    }
+
     function toggle(id) {
       const body = document.getElementById('body-' + id);
       const btn = body.closest('article').querySelector('.read-toggle');
@@ -787,6 +1003,11 @@
     if (saved === 'light') {
       document.documentElement.classList.add('light');
     }
+
+    // Open the tab from the URL hash, defaulting to Projects
+    const validTabs = ['projects', 'blog', 'about'];
+    const initialTab = validTabs.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'blog';
+    showTab(initialTab);
   </script>
 </body>
 </html>
