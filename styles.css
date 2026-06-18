@@ -499,6 +499,39 @@ article .date {
   font-weight: 500;
 }
 
+.article-body-inner h3 {
+  font-family: 'Newsreader', serif;
+  font-weight: 500;
+  font-size: 1.05rem;
+  color: var(--text);
+  margin: 22px 0 6px;
+}
+
+.article-body-inner pre {
+  margin: 14px 0;
+  padding: 14px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.article-body-inner pre code {
+  font-family: 'Consolas', 'SF Mono', 'Menlo', monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.article-body-inner :not(pre) > code {
+  font-family: 'Consolas', 'SF Mono', 'Menlo', monospace;
+  font-size: 0.85em;
+  background: var(--accent-light);
+  color: var(--accent);
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
 .read-toggle {
   display: inline-block;
   padding: 16px 32px 28px;
