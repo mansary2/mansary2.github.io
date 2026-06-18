@@ -448,7 +448,8 @@ article .date {
 }
 
 .article-body.expanded {
-  max-height: 3000px;
+  /* max-height is set inline by JS to the actual content height so long
+     articles never get clipped, on any viewport. */
   opacity: 1;
 }
 

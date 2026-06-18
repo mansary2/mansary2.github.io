@@ -442,12 +442,15 @@
     }
 
     // Auto-wire every article's expand/collapse toggle — no IDs to manage.
+    // max-height is set to the real content height so long articles never clip.
     document.querySelectorAll('article .read-toggle').forEach(btn => {
       btn.addEventListener('click', () => {
         const body = btn.closest('article').querySelector('.article-body');
-        const expanded = body.classList.toggle('expanded');
-        btn.classList.toggle('expanded', expanded);
-        btn.innerHTML = (expanded ? 'Read less' : 'Read more') + ' <span class="arrow">&#9662;</span>';
+        const expanding = !body.classList.contains('expanded');
+        body.classList.toggle('expanded', expanding);
+        btn.classList.toggle('expanded', expanding);
+        body.style.maxHeight = expanding ? body.scrollHeight + 'px' : null;
+        btn.innerHTML = (expanding ? 'Read less' : 'Read more') + ' <span class="arrow">&#9662;</span>';
       });
     });
 
